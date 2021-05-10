@@ -50,6 +50,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Main";
             this.Text = "ShopMallWebSocket";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

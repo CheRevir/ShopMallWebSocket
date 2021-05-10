@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -373,9 +374,25 @@ namespace ShopMallWebSocket
                     else if (chat_uid == -2)
                     {
                         list = list.Where(e => e.User_Type == 0 && e.News_State == 0).ToList();
-                        foreach (Model.Message message in list)
+                        if (list.Count > 0)
                         {
-                            session.Send("Message:" + JsonConvert.SerializeObject(message));
+                            foreach (Model.Message message in list)
+                            {
+                                session.Send("Message:" + JsonConvert.SerializeObject(message));
+                            }
+                        }
+                        else
+                        {
+                            Model.Message m = new Model.Message
+                            {
+                                Chat_UID=0,
+                                UID = uid,
+                                User_Type = 0,
+                                News_Type = 0,
+                                News = "%e4%bd%a0%e5%a5%bd%ef%bc%8c%e8%af%b7%e9%97%ae%e6%9c%89%e4%bb%80%e4%b9%88%e9%97%ae%e9%a2%98%ef%bc%9f",
+                                Time = DateTime.Now
+                            };
+                            session.Send("AutoMessage:" + JsonConvert.SerializeObject(m));
                         }
                     }
                     else if (chat_uid > 0)
@@ -778,6 +795,18 @@ namespace ShopMallWebSocket
                     }
                     break;
                 }
+            }
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("真的要退出程序吗？", "退出程序", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                Process.GetCurrentProcess().Kill();
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }
